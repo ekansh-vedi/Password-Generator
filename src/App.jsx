@@ -13,17 +13,24 @@ function App() {
   const passwordGenerator = useCallback(() => {
     let pass = "";
     let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    if (number) str = str + "0123456789";
-    if (character) str = str + "!@#$%^&*()";
-
-    for (let i = 1; i < length; i++) {
-      let char = Math.floor(Math.random() * str.length);
-      pass = pass + str.charAt(char);
+  
+    if (number) str += "0123456789";
+    if (character) str += "!@#$%^&*()";
+  
+    for (let i = 0; i < length; i++) {
+      let char;
+      if (i === 0 && number) {
+        // Ensure at least one number is included at the first position
+        char = Math.floor(Math.random() * 10) + 48; // Random number between 0 and 9 (ASCII range)
+      } else {
+        char = str.charAt(Math.floor(Math.random() * str.length));
+      }
+      pass += char;
     }
-
+  
     setPassword(pass);
   }, [length, number, character]);
+  
 
   const copyPassToClip = useCallback(() => {
     if (navigator.clipboard) {
@@ -79,7 +86,7 @@ function App() {
         <div className="flex items-center gap-x-1">
           <input
             type="range"
-            min={6}
+            min={8}
             max={100}
             value={length}
             className=" cursor-pointer appearance-none bg-yellow-500  rounded-full "
